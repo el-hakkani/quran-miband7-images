@@ -51,7 +51,7 @@ sub create {
 	print "Page: ". $page->{number} ."\n";
 
 	my $fontfactor = 21;    # 21 is the default
-	my $fontdelta = 1; #(21 - abs(21 - $fontfactor)) / 21;
+	my $fontdelta = 0.95; #(21 - abs(21 - $fontfactor)) / 21;
 
 	# page 270 font is slightly larger so it goes off the page
 	if ($page->{number} == 270){
@@ -59,9 +59,9 @@ sub create {
 	}
 
 	$page->{width}   = $self->{_width};
-	$page->{height}  = $self->{_width} * Quran::Image::PHI * $fontdelta;
+	$page->{height}  = $self->{_width} * Quran::Image::PHI * $fontdelta + 30;
 	$page->{ptsize}  = int($self->{_width} / $fontfactor);
-	$page->{margin_top} = $page->{ptsize} / 2;
+	$page->{margin_top} = 10;
 	$page->{coord_y} = $page->{margin_top};
 	$page->{font}    = Quran::Image::FONT_DEFAULT; # TODO: determine font size algorithmically and trim page height to fit or force fit
 	$page->{image} = GD::Image->new($page->{width}, $page->{height});
@@ -70,13 +70,13 @@ sub create {
 		white => $page->{image}->colorAllocateAlpha(255,255,255,127),
 		black => $page->{image}->colorAllocate(0,0,0),
 		#red   => $page->{image}->colorAllocate(127,11,19)
-		red   => $page->{image}->colorAllocate(19,50,112)
+		red   => $page->{image}->colorAllocate(19,50,112),
+		green   => $page->{image}->colorAllocate(20,110,0)
 	};
 
 	$page->{image}->alphaBlending(1);
 	$page->{image}->interlaced('true');
 	$page->{image}->setAntiAliased( $page->{color}->{black} );
-	$page->{image}->transparent(    $page->{color}->{white} );
 
 	$page->{lines} = $self->db->get_page_lines($page->{number});
 
@@ -100,9 +100,9 @@ sub create {
 			$glyph->{box} = $self->_get_box($glyph);
 
 			if ( $line->{type} ne 'sura' and grep { $page->{number} eq $_ } qw/1 2/  ) {
-				$glyph->{use_coord_y} = 1;
-				$glyph->{box}{coord_y} += 100;
-				$glyph->{y_offset} = 100;
+				# $glyph->{use_coord_y} = 1;
+				# $glyph->{box}{coord_y} += 100;
+				# $glyph->{y_offset} = 100;
 				#         $log->info( 'hmm' );
 				#         $log->info( Dumper $page );
 				#         exit 0;
@@ -112,13 +112,13 @@ sub create {
 				my $glyph = $self->db->get_ornament_glyph('header-box');
 				$glyph->{line} = $line;
 
-				$glyph->{ptsize} = $page->{ptsize} * 1.8;
+				$glyph->{ptsize} = $page->{ptsize} * 1;
 
 				$glyph->{box} = $self->_get_box($glyph);
 
 				$glyph->{use_coords} = 1;
 
-				$glyph->{box}->{coord_y} = $page->{coord_y};
+				$glyph->{box}->{coord_y} = $page->{coord_y} - 10;
 				$glyph->{box}->{coord_y} -= $glyph->{box}->{char_down};
 
 				$self->_set_box($glyph);
@@ -142,13 +142,8 @@ sub create {
 		}
 
 		$page->{coord_y} -= $line->{box}->{char_down};
+		$page->{coord_y} += 2 * $line->{box}->{char_up} + (($i+1) % 3 == 0 ? 10 : 0);
 
-		if ($page->{number} == 1 || $page->{number} == 2) {
-			$page->{coord_y} += Quran::Image::PHI * $line->{box}->{char_up};
-		}
-		else {
-			$page->{coord_y} += 2 * $line->{box}->{char_up};
-		}
 	}
 
 	return $page->{image};
@@ -168,13 +163,13 @@ sub _set_box {
 	my $color = $page->{color}->{black};
 
 	if ($line->{type} eq 'ayah') {
-		#my $gt = $self->db->_get_glyph_type($glyph->{text}, $page->{number});
-		#$color = $self->_should_color($glyph->{text}, $page->{number},
-		#   $line->{type}, $gt) ?
-		#	$page->{color}->{red} : $page->{color}->{black};
+		my $gt = $self->db->_get_glyph_type($glyph->{text}, $page->{number});
+		$color = $self->_should_color($glyph->{text}, $page->{number},
+		  $line->{type}, $gt) ?
+			$page->{color}->{red} : $page->{color}->{black};
 	}
-	elsif ($line->{type} eq 'sura'){
-		#$color = $page->{color}->{red};
+	elsif ($line->{type} eq 'sura') { 
+		$color = $page->{color}->{green};
 	}
 
 	# begin hack
