@@ -163,7 +163,7 @@ MIN_ROWS = 77430;
 
 CREATE UNIQUE INDEX `value` ON `nextgen`.`word_arabic` (`value` ASC) ;
 
-CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_arabic` (`value` ASC) ;
+-- CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_arabic` (`value` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -182,7 +182,7 @@ MAX_ROWS = 77430;
 
 CREATE UNIQUE INDEX `value` ON `nextgen`.`word_lemma` (`value` ASC) ;
 
-CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_lemma` (`value` ASC) ;
+-- CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_lemma` (`value` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -200,7 +200,7 @@ MAX_ROWS = 77430;
 
 CREATE UNIQUE INDEX `value` ON `nextgen`.`word_root` (`value` ASC) ;
 
-CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_root` (`value` ASC) ;
+-- CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_root` (`value` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -218,7 +218,7 @@ MAX_ROWS = 77430;
 
 CREATE UNIQUE INDEX `value` ON `nextgen`.`word_stem` (`value` ASC) ;
 
-CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_stem` (`value` ASC) ;
+-- CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_stem` (`value` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -276,7 +276,7 @@ CREATE INDEX `value_index` ON `nextgen`.`word_translation` (`value` ASC) ;
 
 CREATE INDEX `language_value_index` ON `nextgen`.`word_translation` (`value` ASC, `language_id` ASC) ;
 
-CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_translation` (`value` ASC) ;
+-- CREATE FULLTEXT INDEX `value_fulltext` ON `nextgen`.`word_translation` (`value` ASC) ;
 
 CREATE UNIQUE INDEX `UNIQUE` ON `nextgen`.`word_translation` (`word_id` ASC, `language_id` ASC, `value` ASC) ;
 
