@@ -20,3 +20,4 @@ test_output
 .tmp
 mobile
 mysqldata
+/**/.DS_Store
